@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+
+		<!-- Enable client generation -->
+		<GenerateApiClient>true</GenerateApiClient>
+
+		<!-- Path to NSwag config -->
+		<NSwagConfig>nswag.json</NSwagConfig>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Compilecare.ApiClient" Version="1.0.0" />
+	</ItemGroup>
+
+	<!-- Include generated code -->
+	<ItemGroup>
+		<Compile Include="Generated\**\*.cs" />
+	</ItemGroup>
+
+</Project>

@@ -1,0 +1,14 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+	<Target Name="GenerateCompileCareApiClient"
+			BeforeTargets="BeforeCompile"
+			Condition="Exists('$(ProjectDir)nswag.json')">
+
+		<Message Text="Running CompileCare API client generation..."
+				 Importance="High" />
+
+		<Exec Command="dotnet nswag run &quot;$(ProjectDir)nswag.json&quot;" />
+
+	</Target>
+
+</Project>

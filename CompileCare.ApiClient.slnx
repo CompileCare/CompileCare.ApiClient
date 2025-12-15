@@ -1,0 +1,13 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path="README.md" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="src/CompileCare.ApiClient/CompileCare.ApiClient.csproj" Id="ef1edd7b-bfa1-4c8d-bf91-0df7b15d57c1" />
+  </Folder>
+  <Folder Name="/src/Demo/">
+    <Project Path="ApiClientDemo.API/ApiClientDemo.API.csproj" Id="23a46aee-5a42-4571-bf3e-fd7db331d2aa" />
+    <Project Path="ApiClientDemo.Client/ApiClientDemo.Client.csproj" Id="773173c0-f46d-4125-aa3a-d86b59c8fcf6" />
+  </Folder>
+  
+</Solution>

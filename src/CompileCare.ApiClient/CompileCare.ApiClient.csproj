@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+
+		<!-- NuGet package metadata -->
+		<PackageId>CompileCare.ApiClient</PackageId>
+		<Version>1.0.0</Version>
+		<Authors>CompileCare</Authors>
+		<Company>CompileCare</Company>
+		<Description>NSwag-based API client generation tooling</Description>
+
+		<!-- Packaging settings -->
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<IncludeBuildOutput>false</IncludeBuildOutput>
+		<IsPackable>true</IsPackable>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<!-- Include the .targets file in the NuGet package -->
+		<None Include="build\compilecare.targets"
+			  Pack="true"
+			  PackagePath="build\" />
+	</ItemGroup>
+
+</Project>
