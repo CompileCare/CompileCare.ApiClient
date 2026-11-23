@@ -40,7 +40,7 @@ public sealed class CompileCareApiException : HttpRequestException
         CompileCareApiProblemDetails problemDetails,
         string? correlationId)
         : base(
-            problemDetails.Detail ?? problemDetails.Title ?? $"CompileCare API request failed with status {(int)statusCode}.",
+            problemDetails.Title ?? $"CompileCare API request failed with status {(int)statusCode}.",
             inner: null,
             statusCode)
     {

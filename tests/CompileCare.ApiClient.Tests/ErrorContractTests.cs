@@ -35,6 +35,7 @@ public sealed class ErrorContractTests
         Assert.Equal("Facility conflict", exception.ProblemDetails.Title);
         Assert.Equal("trace-123", exception.ProblemDetails.TraceId);
         Assert.Equal("corr-123", exception.CorrelationId);
+        Assert.DoesNotContain("The resource conflicts", exception.Message);
     }
 
     [Fact]
