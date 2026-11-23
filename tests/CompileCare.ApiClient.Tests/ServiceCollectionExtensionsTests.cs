@@ -96,7 +96,7 @@ public class ServiceCollectionExtensionsTests
 
     private sealed class CustomTenantProvider : ITenantContextProvider
     {
-        public string? GetTenantId() => "custom-tenant";
+        public Guid? GetTenantId() => Guid.Parse("c0aa79b4-6d94-41c2-87e5-04c5d2a3b8c9");
     }
 
     private sealed class CustomTokenProvider : IAccessTokenProvider
