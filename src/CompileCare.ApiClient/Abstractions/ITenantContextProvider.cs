@@ -1,11 +1,12 @@
 namespace CompileCare.ApiClient.Abstractions;
 
+/// <summary>Provides the authenticated application's selected tenant identifier.</summary>
 public interface ITenantContextProvider
 {
-    string? GetTenantId();
+    Guid? GetTenantId();
 }
 
 public sealed class NullTenantContextProvider : ITenantContextProvider
 {
-    public string? GetTenantId() => null;
+    public Guid? GetTenantId() => null;
 }

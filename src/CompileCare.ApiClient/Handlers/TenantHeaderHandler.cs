@@ -14,10 +14,14 @@ public sealed class TenantHeaderHandler(ITenantContextProvider tenantContextProv
         request.Headers.Remove(HeaderName);
 
         var tenantId = tenantContextProvider.GetTenantId();
-
-        if (!string.IsNullOrWhiteSpace(tenantId))
+        if (tenantId == Guid.Empty)
         {
-            request.Headers.TryAddWithoutValidation(HeaderName, tenantId);
+            throw new InvalidOperationException("The tenant context provider returned an empty tenant identifier.");
+        }
+
+        if (tenantId.HasValue)
+        {
+            request.Headers.TryAddWithoutValidation(HeaderName, tenantId.Value.ToString("D"));
         }
 
         return base.SendAsync(request, cancellationToken);

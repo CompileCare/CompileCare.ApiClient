@@ -7,6 +7,13 @@ namespace CompileCare.ApiClient.DependencyInjection;
 
 public static class ServiceCollectionExtensions
 {
+    private const int DefaultMaxRetryAttempts = 2;
+
+    /// <summary>
+    /// Registers a named CompileCare HttpClient with authoritative tenant, correlation,
+    /// and optional bearer-token propagation plus bounded standard HTTP resilience.
+    /// Only safe HTTP methods are retried automatically.
+    /// </summary>
     public static IHttpClientBuilder AddCompileCareApiClient(
         this IServiceCollection services,
         string name,
@@ -42,6 +49,28 @@ public static class ServiceCollectionExtensions
             })
             .AddHttpMessageHandler<TenantHeaderHandler>()
             .AddHttpMessageHandler<CorrelationIdHandler>()
-            .AddHttpMessageHandler<BearerTokenHandler>();
+            .AddHttpMessageHandler<BearerTokenHandler>()
+            .AddStandardResilienceHandler(options =>
+            {
+                // GET/HEAD/OPTIONS/TRACE may be retried; unsafe methods are never
+                // transparently replayed because their operations may not be idempotent.
+                options.Retry.MaxRetryAttempts = DefaultMaxRetryAttempts;
+                options.Retry.DisableForUnsafeHttpMethods();
+            });
+    }
+
+    /// <summary>
+    /// Registers a strongly typed client backed by the same named CompileCare HTTP pipeline.
+    /// The client type must have a constructor accepting HttpClient.
+    /// </summary>
+    public static IHttpClientBuilder AddCompileCareTypedClient<TClient>(
+        this IServiceCollection services,
+        string name,
+        Action<CompileCareApiClientOptions> configure)
+        where TClient : class
+    {
+        return services
+            .AddCompileCareApiClient(name, configure)
+            .AddTypedClient<TClient>();
     }
 }
