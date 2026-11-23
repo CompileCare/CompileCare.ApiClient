@@ -75,9 +75,28 @@ public class ServiceCollectionExtensionsTests
         Assert.Throws<OptionsValidationException>(() => options.Get("CompileCare"));
     }
 
+    [Fact]
+    public void AddCompileCareTypedClient_ResolvesTypedClientWithConfiguredBaseAddress()
+    {
+        var services = new ServiceCollection();
+        services.AddCompileCareTypedClient<TestTypedClient>(
+            "TypedCompileCare",
+            options => options.BaseAddress = new Uri("https://api.compilecare.test/"));
+
+        using var provider = services.BuildServiceProvider();
+        var client = provider.GetRequiredService<TestTypedClient>();
+
+        Assert.Equal(new Uri("https://api.compilecare.test/"), client.BaseAddress);
+    }
+
+    private sealed class TestTypedClient(HttpClient httpClient)
+    {
+        public Uri? BaseAddress => httpClient.BaseAddress;
+    }
+
     private sealed class CustomTenantProvider : ITenantContextProvider
     {
-        public string? GetTenantId() => "custom-tenant";
+        public Guid? GetTenantId() => Guid.Parse("c0aa79b4-6d94-41c2-87e5-04c5d2a3b8c9");
     }
 
     private sealed class CustomTokenProvider : IAccessTokenProvider

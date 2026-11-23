@@ -5,12 +5,12 @@ Reusable HTTP client infrastructure for CompileCare services and API consumers.
 ## Features
 
 - Targets .NET 10.
-- Named HttpClient registration with validated base address and timeout.
+- Named and strongly typed HttpClient registration with validated base address and timeout.
 - Automatic `X-Tenant-ID` propagation through an injectable tenant context provider.
 - Automatic `X-Correlation-ID` propagation through an injectable correlation provider.
 - Optional Bearer token injection through an injectable access-token provider.
 - Compatible with NSwag-generated clients and ordinary HttpClient consumers.
-- No retry policy is enabled by default. Consumers should explicitly add resilience policies based on operation safety.
+- Standard bounded resilience is enabled: timeout, concurrency limiting, circuit breaker, and up to two retries for safe HTTP methods only. Unsafe methods are excluded from automatic retries.
 
 > **Security:** The tenant header is context only. It is not authentication or authorization. The API must validate the authenticated user's tenant membership and enforce tenant scope server-side. Never log tokens, credentials, or PHI.
 
@@ -34,7 +34,28 @@ Use the named client:
 var client = httpClientFactory.CreateClient("CompileCare");
 ```
 
-For a generated NSwag client, register it with the named client or configure its constructor to use the configured HttpClient. This package does not generate clients during build; generation remains a separate concern.
+For a generated NSwag client or hand-written client with an HttpClient constructor, use the typed registration:
+
+```csharp
+builder.Services.AddCompileCareTypedClient<GeneratedCompileCareClient>(
+    "CompileCare",
+    options => options.BaseAddress = new Uri(builder.Configuration["CompileCare:BaseUrl"]!));
+```
+
+The same tenant, correlation, token, and resilience handlers are used by named and typed registrations. This package does not generate clients during build; generation remains a separate concern.
+
+## Error handling
+
+Use the response extension when a caller expects a successful response. It throws CompileCareApiException on non-success status codes and captures safe RFC 9457 Problem Details fields and the X-Correlation-ID response header when available.
+
+```csharp
+using CompileCare.ApiClient.Errors;
+
+using var response = await client.GetAsync("api/v1/hospitals", cancellationToken);
+await response.EnsureSuccessOrThrowAsync(cancellationToken);
+```
+
+The extension does not log response bodies, tokens, or patient data. Callers that intentionally handle statuses such as 404 or 409 can inspect the response directly instead of invoking the extension.
 
 ## Providers
 
@@ -64,6 +85,10 @@ using (correlationProvider?.BeginScope("request-correlation-id"))
 dotnet test
 ```
 
+## Resilience and replay safety
+
+The standard resilience pipeline bounds request duration and concurrency and uses a circuit breaker. Only safe HTTP methods are automatically retried. POST, PUT, PATCH, DELETE, and other unsafe methods are not replayed automatically; use an explicit idempotency contract before adding retries for a command. The HttpClient timeout remains configurable per named client.
+
 ## Current scope
 
-This package provides shared request configuration and propagation. Authentication/authorization, tenant validation, retry policies, generated API contracts, and service-specific endpoints belong to their respective application layers.
+This package provides reusable outbound HTTP infrastructure. It does not authenticate end users, authorize tenant membership, validate tenant access, generate API contracts, or define service-specific endpoints. Those responsibilities remain in the API/application layers.

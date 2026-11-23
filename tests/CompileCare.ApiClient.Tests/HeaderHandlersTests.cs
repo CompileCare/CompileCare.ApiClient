@@ -9,18 +9,15 @@ public class HeaderHandlersTests
     [Fact]
     public async Task TenantHeaderHandler_AddsTenantHeader_WhenTenantIsAvailable()
     {
-        using var client = CreateClient(new TenantHeaderHandler(new FixedTenantProvider("tenant-123")));
+        using var client = CreateClient(new TenantHeaderHandler(new FixedTenantProvider(Guid.Parse("b313443b-8a35-42a7-a4c3-3d0fa213b5db"))));
         using var response = await client.GetAsync("https://example.test/");
-        Assert.Equal("tenant-123", response.RequestMessage?.Headers.GetValues(TenantHeaderHandler.HeaderName).Single());
+        Assert.Equal("b313443b-8a35-42a7-a4c3-3d0fa213b5db", response.RequestMessage?.Headers.GetValues(TenantHeaderHandler.HeaderName).Single());
     }
 
-    [Theory]
-    [InlineData(null)]
-    [InlineData("")]
-    [InlineData("   ")]
-    public async Task TenantHeaderHandler_DoesNotAddHeader_WhenTenantIsMissingOrBlank(string? tenantId)
+    [Fact]
+    public async Task TenantHeaderHandler_DoesNotAddHeader_WhenTenantIsMissing()
     {
-        using var client = CreateClient(new TenantHeaderHandler(new FixedTenantProvider(tenantId)));
+        using var client = CreateClient(new TenantHeaderHandler(new FixedTenantProvider(null)));
         using var request = new HttpRequestMessage(HttpMethod.Get, "https://example.test/");
         request.Headers.Add(TenantHeaderHandler.HeaderName, "caller-tenant");
 
@@ -32,13 +29,21 @@ public class HeaderHandlersTests
     [Fact]
     public async Task TenantHeaderHandler_OverwritesExistingHeader_WhenProviderReturnsTenant()
     {
-        using var client = CreateClient(new TenantHeaderHandler(new FixedTenantProvider("tenant-new")));
+        using var client = CreateClient(new TenantHeaderHandler(new FixedTenantProvider(Guid.Parse("a1a720d9-1682-42b4-a90c-7ce52fbe2df1"))));
         using var request = new HttpRequestMessage(HttpMethod.Get, "https://example.test/");
-        request.Headers.Add(TenantHeaderHandler.HeaderName, "tenant-old");
+        request.Headers.Add(TenantHeaderHandler.HeaderName, "c9e5861e-2658-4355-9f29-4895a96cc0c0");
 
         using var response = await client.SendAsync(request);
 
-        Assert.Equal("tenant-new", response.RequestMessage?.Headers.GetValues(TenantHeaderHandler.HeaderName).Single());
+        Assert.Equal("a1a720d9-1682-42b4-a90c-7ce52fbe2df1", response.RequestMessage?.Headers.GetValues(TenantHeaderHandler.HeaderName).Single());
+    }
+
+    [Fact]
+    public async Task TenantHeaderHandler_RejectsEmptyTenantIdentifier()
+    {
+        using var client = CreateClient(new TenantHeaderHandler(new FixedTenantProvider(Guid.Empty)));
+        await Assert.ThrowsAsync<InvalidOperationException>(
+            () => client.GetAsync("https://example.test/"));
     }
 
     [Fact]
@@ -119,9 +124,9 @@ public class HeaderHandlersTests
         return new HttpClient(handler);
     }
 
-    private sealed class FixedTenantProvider(string? tenantId) : ITenantContextProvider
+    private sealed class FixedTenantProvider(Guid? tenantId) : ITenantContextProvider
     {
-        public string? GetTenantId() => tenantId;
+        public Guid? GetTenantId() => tenantId;
     }
 
     private sealed class FixedCorrelationProvider(string correlationId) : ICorrelationIdProvider

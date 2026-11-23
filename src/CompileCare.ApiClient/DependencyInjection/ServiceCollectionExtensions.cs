@@ -2,11 +2,19 @@ using CompileCare.ApiClient.Abstractions;
 using CompileCare.ApiClient.Handlers;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Http.Resilience;
 
 namespace CompileCare.ApiClient.DependencyInjection;
 
 public static class ServiceCollectionExtensions
 {
+    private const int DefaultMaxRetryAttempts = 2;
+
+    /// <summary>
+    /// Registers a named CompileCare HttpClient with authoritative tenant, correlation,
+    /// and optional bearer-token propagation plus bounded standard HTTP resilience.
+    /// Only safe HTTP methods are retried automatically.
+    /// </summary>
     public static IHttpClientBuilder AddCompileCareApiClient(
         this IServiceCollection services,
         string name,
@@ -30,7 +38,7 @@ public static class ServiceCollectionExtensions
         services.AddTransient<CorrelationIdHandler>();
         services.AddTransient<BearerTokenHandler>();
 
-        return services.AddHttpClient(name)
+        var clientBuilder = services.AddHttpClient(name)
             .ConfigureHttpClient((serviceProvider, httpClient) =>
             {
                 var options = serviceProvider.GetRequiredService<
@@ -43,5 +51,30 @@ public static class ServiceCollectionExtensions
             .AddHttpMessageHandler<TenantHeaderHandler>()
             .AddHttpMessageHandler<CorrelationIdHandler>()
             .AddHttpMessageHandler<BearerTokenHandler>();
+
+        clientBuilder.AddStandardResilienceHandler(options =>
+        {
+            // GET/HEAD/OPTIONS/TRACE may be retried; unsafe methods are never
+            // transparently replayed because their operations may not be idempotent.
+            options.Retry.MaxRetryAttempts = DefaultMaxRetryAttempts;
+            options.Retry.DisableForUnsafeHttpMethods();
+        });
+
+        return clientBuilder;
+    }
+
+    /// <summary>
+    /// Registers a strongly typed client backed by the same named CompileCare HTTP pipeline.
+    /// The client type must have a constructor accepting HttpClient.
+    /// </summary>
+    public static IHttpClientBuilder AddCompileCareTypedClient<TClient>(
+        this IServiceCollection services,
+        string name,
+        Action<CompileCareApiClientOptions> configure)
+        where TClient : class
+    {
+        return services
+            .AddCompileCareApiClient(name, configure)
+            .AddTypedClient<TClient>();
     }
 }
