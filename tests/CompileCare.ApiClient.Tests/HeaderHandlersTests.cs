@@ -1,5 +1,6 @@
 using CompileCare.ApiClient.Abstractions;
 using CompileCare.ApiClient.Handlers;
+using Xunit;
 
 namespace CompileCare.ApiClient.Tests;
 
