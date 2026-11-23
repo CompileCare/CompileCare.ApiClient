@@ -38,7 +38,7 @@ public static class ServiceCollectionExtensions
         services.AddTransient<CorrelationIdHandler>();
         services.AddTransient<BearerTokenHandler>();
 
-        return services.AddHttpClient(name)
+        var clientBuilder = services.AddHttpClient(name)
             .ConfigureHttpClient((serviceProvider, httpClient) =>
             {
                 var options = serviceProvider.GetRequiredService<
@@ -50,14 +50,17 @@ public static class ServiceCollectionExtensions
             })
             .AddHttpMessageHandler<TenantHeaderHandler>()
             .AddHttpMessageHandler<CorrelationIdHandler>()
-            .AddHttpMessageHandler<BearerTokenHandler>()
-            .AddStandardResilienceHandler(options =>
-            {
-                // GET/HEAD/OPTIONS/TRACE may be retried; unsafe methods are never
-                // transparently replayed because their operations may not be idempotent.
-                options.Retry.MaxRetryAttempts = DefaultMaxRetryAttempts;
-                options.Retry.DisableForUnsafeHttpMethods();
-            });
+            .AddHttpMessageHandler<BearerTokenHandler>();
+
+        clientBuilder.AddStandardResilienceHandler(options =>
+        {
+            // GET/HEAD/OPTIONS/TRACE may be retried; unsafe methods are never
+            // transparently replayed because their operations may not be idempotent.
+            options.Retry.MaxRetryAttempts = DefaultMaxRetryAttempts;
+            options.Retry.DisableForUnsafeHttpMethods();
+        });
+
+        return clientBuilder;
     }
 
     /// <summary>
