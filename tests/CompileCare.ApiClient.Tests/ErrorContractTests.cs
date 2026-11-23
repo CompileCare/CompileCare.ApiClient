@@ -33,6 +33,7 @@ public sealed class ErrorContractTests
 
         Assert.Equal(HttpStatusCode.Conflict, exception.StatusCode);
         Assert.Equal("Facility conflict", exception.ProblemDetails.Title);
+        Assert.Equal("The resource conflicts with an existing facility.", exception.ProblemDetails.Detail);
         Assert.Equal("trace-123", exception.ProblemDetails.TraceId);
         Assert.Equal("corr-123", exception.CorrelationId);
         Assert.DoesNotContain("The resource conflicts", exception.Message);
