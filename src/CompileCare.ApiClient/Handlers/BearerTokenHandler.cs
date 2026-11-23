@@ -8,6 +8,9 @@ public sealed class BearerTokenHandler(IAccessTokenProvider accessTokenProvider)
         HttpRequestMessage request,
         CancellationToken cancellationToken)
     {
+        // The provider is authoritative: never forward caller-supplied or stale credentials.
+        request.Headers.Authorization = null;
+
         var accessToken = await accessTokenProvider.GetAccessTokenAsync(cancellationToken);
 
         if (!string.IsNullOrWhiteSpace(accessToken))
