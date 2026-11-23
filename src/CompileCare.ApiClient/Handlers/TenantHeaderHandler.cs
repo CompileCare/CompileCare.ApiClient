@@ -10,11 +10,13 @@ public sealed class TenantHeaderHandler(ITenantContextProvider tenantContextProv
         HttpRequestMessage request,
         CancellationToken cancellationToken)
     {
+        // The provider is authoritative: never forward caller-supplied or stale tenant context.
+        request.Headers.Remove(HeaderName);
+
         var tenantId = tenantContextProvider.GetTenantId();
 
         if (!string.IsNullOrWhiteSpace(tenantId))
         {
-            request.Headers.Remove(HeaderName);
             request.Headers.TryAddWithoutValidation(HeaderName, tenantId);
         }
 
