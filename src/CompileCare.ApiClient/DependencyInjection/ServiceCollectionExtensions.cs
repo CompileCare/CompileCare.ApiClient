@@ -2,6 +2,7 @@ using CompileCare.ApiClient.Abstractions;
 using CompileCare.ApiClient.Handlers;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Http.Resilience;
 
 namespace CompileCare.ApiClient.DependencyInjection;
 

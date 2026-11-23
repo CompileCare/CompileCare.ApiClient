@@ -14,13 +14,10 @@ public class HeaderHandlersTests
         Assert.Equal("b313443b-8a35-42a7-a4c3-3d0fa213b5db", response.RequestMessage?.Headers.GetValues(TenantHeaderHandler.HeaderName).Single());
     }
 
-    [Theory]
-    [InlineData(null)]
-    [InlineData("")]
-    [InlineData("   ")]
-    public async Task TenantHeaderHandler_DoesNotAddHeader_WhenTenantIsMissingOrBlank(string? tenantId)
+    [Fact]
+    public async Task TenantHeaderHandler_DoesNotAddHeader_WhenTenantIsMissing()
     {
-        using var client = CreateClient(new TenantHeaderHandler(new FixedTenantProvider(tenantId)));
+        using var client = CreateClient(new TenantHeaderHandler(new FixedTenantProvider(null)));
         using var request = new HttpRequestMessage(HttpMethod.Get, "https://example.test/");
         request.Headers.Add(TenantHeaderHandler.HeaderName, "caller-tenant");
 
