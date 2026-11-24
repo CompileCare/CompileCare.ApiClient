@@ -7,7 +7,7 @@ Reusable HTTP client infrastructure for CompileCare services and API consumers.
 - Targets .NET 10.
 - Named and strongly typed HttpClient registration with validated base address and timeout.
 - Automatic `X-Tenant-ID` propagation through an injectable tenant context provider.
-- Automatic `X-Correlation-ID` propagation through an injectable correlation provider.
+- Automatic `X-Correlation-ID` propagation through an injectable correlation provider; values are validated to the API-safe 1–64 character ASCII format, and invalid or caller-supplied values are replaced.
 - Optional Bearer token injection through an injectable access-token provider.
 - Compatible with NSwag-generated clients and ordinary HttpClient consumers.
 - Standard bounded resilience is enabled: timeout, concurrency limiting, circuit breaker, and up to two retries for safe HTTP methods only. Unsafe methods are excluded from automatic retries.
