@@ -10,14 +10,14 @@ public sealed class CorrelationIdHandler(ICorrelationIdProvider correlationIdPro
         HttpRequestMessage request,
         CancellationToken cancellationToken)
     {
+        // Caller-supplied values are never trusted. Always replace or generate a safe value.
+        request.Headers.Remove(HeaderName);
+
         var correlationId = correlationIdProvider.GetCorrelationId();
+        if (!CorrelationIdValidator.IsValid(correlationId))
+            correlationId = Guid.NewGuid().ToString("N");
 
-        if (!string.IsNullOrWhiteSpace(correlationId))
-        {
-            request.Headers.Remove(HeaderName);
-            request.Headers.TryAddWithoutValidation(HeaderName, correlationId);
-        }
-
+        request.Headers.TryAddWithoutValidation(HeaderName, correlationId);
         return base.SendAsync(request, cancellationToken);
     }
 }
