@@ -21,6 +21,8 @@ public sealed class DefaultCorrelationIdProvider : ICorrelationIdProvider
     public IDisposable BeginScope(string correlationId)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(correlationId);
+        if (!CorrelationIdValidator.IsValid(correlationId))
+            throw new ArgumentException("Correlation IDs must be 1-64 ASCII letters, digits, dots, underscores or hyphens.", nameof(correlationId));
 
         var previous = _scopedCorrelationId.Value;
         _scopedCorrelationId.Value = correlationId;
