@@ -66,6 +66,24 @@ public class HeaderHandlersTests
         Assert.Equal("corr-new", response.RequestMessage?.Headers.GetValues(CorrelationIdHandler.HeaderName).Single());
     }
 
+    [Theory]
+    [InlineData("")]
+    [InlineData("invalid value")]
+    [InlineData("bad\r\nheader")]
+    [InlineData("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")]
+    public async Task CorrelationIdHandler_ReplacesInvalidProviderValueAndCallerHeader(string invalidId)
+    {
+        using var client = CreateClient(new CorrelationIdHandler(new FixedCorrelationProvider(invalidId)));
+        using var request = new HttpRequestMessage(HttpMethod.Get, "https://example.test/");
+        request.Headers.Add(CorrelationIdHandler.HeaderName, "caller-correlation");
+
+        using var response = await client.SendAsync(request);
+
+        var generated = response.RequestMessage?.Headers.GetValues(CorrelationIdHandler.HeaderName).Single();
+        Assert.True(Guid.TryParseExact(generated, "N", out _));
+        Assert.NotEqual("caller-correlation", generated);
+    }
+
     [Fact]
     public void DefaultCorrelationIdProvider_UsesScopedId_WhenNoActivityExists()
     {
@@ -81,6 +99,12 @@ public class HeaderHandlersTests
     [Fact]
     public void DefaultCorrelationIdProvider_RejectsBlankScope()
         => Assert.Throws<ArgumentException>(() => new DefaultCorrelationIdProvider().BeginScope(" "));
+
+    [Theory]
+    [InlineData("unsafe value")]
+    [InlineData("bad\r\nheader")]
+    public void DefaultCorrelationIdProvider_RejectsUnsafeScope(string value)
+        => Assert.Throws<ArgumentException>(() => new DefaultCorrelationIdProvider().BeginScope(value));
 
     [Fact]
     public async Task BearerTokenHandler_AddsAuthorization_WhenTokenExists()
