@@ -2,10 +2,10 @@ using System.Net;
 using System.Net.Http.Json;
 using System.Text.Json.Serialization;
 
-namespace CompileCare.ApiClient.Errors;
+namespace HeapCare.ApiClient.Errors;
 
-/// <summary>Safe RFC 9457 Problem Details fields returned by CompileCare APIs.</summary>
-public sealed class CompileCareApiProblemDetails
+/// <summary>Safe RFC 9457 Problem Details fields returned by HeapCare APIs.</summary>
+public sealed class HeapCareApiProblemDetails
 {
     [JsonPropertyName("type")]
     public string? Type { get; init; }
@@ -30,17 +30,17 @@ public sealed class CompileCareApiProblemDetails
 }
 
 /// <summary>
-/// Represents a non-successful CompileCare API response. The response body is not
+/// Represents a non-successful HeapCare API response. The response body is not
 /// included in the exception message to avoid accidental disclosure of sensitive data.
 /// </summary>
-public sealed class CompileCareApiException : HttpRequestException
+public sealed class HeapCareApiException : HttpRequestException
 {
-    public CompileCareApiException(
+    public HeapCareApiException(
         HttpStatusCode statusCode,
-        CompileCareApiProblemDetails problemDetails,
+        HeapCareApiProblemDetails problemDetails,
         string? correlationId)
         : base(
-            problemDetails.Title ?? $"CompileCare API request failed with status {(int)statusCode}.",
+            problemDetails.Title ?? $"HeapCare API request failed with status {(int)statusCode}.",
             inner: null,
             statusCode)
     {
@@ -48,7 +48,7 @@ public sealed class CompileCareApiException : HttpRequestException
         CorrelationId = correlationId;
     }
 
-    public CompileCareApiProblemDetails ProblemDetails { get; }
+    public HeapCareApiProblemDetails ProblemDetails { get; }
 
     public string? CorrelationId { get; }
 }
@@ -64,13 +64,13 @@ public static class HttpResponseMessageExtensions
         if (response.IsSuccessStatusCode)
             return;
 
-        CompileCareApiProblemDetails? problem = null;
+        HeapCareApiProblemDetails? problem = null;
         if (response.Content is not null &&
             (response.Content.Headers.ContentType?.MediaType is "application/problem+json" or "application/json"))
         {
             try
             {
-                problem = await response.Content.ReadFromJsonAsync<CompileCareApiProblemDetails>(
+                problem = await response.Content.ReadFromJsonAsync<HeapCareApiProblemDetails>(
                     cancellationToken: cancellationToken);
             }
             catch (System.Text.Json.JsonException)
@@ -80,7 +80,7 @@ public static class HttpResponseMessageExtensions
         }
 
         var statusCode = response.StatusCode;
-        problem ??= new CompileCareApiProblemDetails
+        problem ??= new HeapCareApiProblemDetails
         {
             Title = response.ReasonPhrase ?? "The API request failed.",
             Status = (int)statusCode
@@ -90,6 +90,6 @@ public static class HttpResponseMessageExtensions
             ? values.FirstOrDefault()
             : null;
 
-        throw new CompileCareApiException(statusCode, problem, correlationId);
+        throw new HeapCareApiException(statusCode, problem, correlationId);
     }
 }
