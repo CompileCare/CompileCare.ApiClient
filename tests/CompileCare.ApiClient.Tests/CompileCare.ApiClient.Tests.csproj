@@ -10,6 +10,6 @@
     <PackageReference Include="xunit.runner.visualstudio" Version="3.1.5" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="../../src/CompileCare.ApiClient/CompileCare.ApiClient.csproj" />
+    <ProjectReference Include="../../src/HeapCare.ApiClient/HeapCare.ApiClient.csproj" />
   </ItemGroup>
 </Project>
