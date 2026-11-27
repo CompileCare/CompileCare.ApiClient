@@ -19,13 +19,13 @@ Reusable HTTP client infrastructure for HeapCare services and API consumers.
 ## Registration
 
 ```csharp
-using CompileCare.ApiClient.DependencyInjection;
+using HeapCare.ApiClient.DependencyInjection;
 
-builder.Services.AddCompileCareApiClient(
-    "CompileCare",
+builder.Services.AddHeapCareApiClient(
+    "HeapCare",
     options =>
     {
-        options.BaseAddress = new Uri(builder.Configuration["CompileCare:BaseUrl"]!);
+        options.BaseAddress = new Uri(builder.Configuration["HeapCare:BaseUrl"]!);
         options.Timeout = TimeSpan.FromSeconds(30);
     });
 ```
@@ -33,25 +33,25 @@ builder.Services.AddCompileCareApiClient(
 Use the named client:
 
 ```csharp
-var client = httpClientFactory.CreateClient("CompileCare");
+var client = httpClientFactory.CreateClient("HeapCare");
 ```
 
 For a generated NSwag client or hand-written client with an HttpClient constructor, use the typed registration:
 
 ```csharp
-builder.Services.AddCompileCareTypedClient<GeneratedCompileCareClient>(
-    "CompileCare",
-    options => options.BaseAddress = new Uri(builder.Configuration["CompileCare:BaseUrl"]!));
+builder.Services.AddHeapCareTypedClient<GeneratedHeapCareClient>(
+    "HeapCare",
+    options => options.BaseAddress = new Uri(builder.Configuration["HeapCare:BaseUrl"]!));
 ```
 
 The same tenant, correlation, token, and resilience handlers are used by named and typed registrations. This package does not generate clients during build; generation remains a separate concern.
 
 ## Error handling
 
-Use the response extension when a caller expects a successful response. It throws CompileCareApiException on non-success status codes and captures safe RFC 9457 Problem Details fields and the X-Correlation-ID response header when available.
+Use the response extension when a caller expects a successful response. It throws HeapCareApiException on non-success status codes and captures safe RFC 9457 Problem Details fields and the X-Correlation-ID response header when available.
 
 ```csharp
-using CompileCare.ApiClient.Errors;
+using HeapCare.ApiClient.Errors;
 
 using var response = await client.GetAsync("api/v1/hospitals", cancellationToken);
 await response.EnsureSuccessOrThrowAsync(cancellationToken);
