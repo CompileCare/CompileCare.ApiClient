@@ -1,4 +1,4 @@
-namespace CompileCare.ApiClient.Abstractions;
+namespace HeapCare.ApiClient.Abstractions;
 
 /// <summary>Provides the authenticated application's selected tenant identifier.</summary>
 public interface ITenantContextProvider
