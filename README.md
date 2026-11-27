@@ -1,6 +1,6 @@
 # HeapCare API Client
 
-> **Brand migration status:** HeapCare namespaces, project paths and the NuGet package ID are migrated in this branch. The GitHub repository remains `CompileCare/CompileCare.ApiClient` until the organization/repository rename is completed. No domain, DNS, email or deployment origin is assumed.
+> **Migration status:** HeapCare namespaces, project paths and NuGet package ID are migrated and the package is published to GitHub Packages. The GitHub repository slug and package owner namespace remain `CompileCare` until the administrative rename is completed. No domain, DNS, email or deployment origin is assumed.
 
 Reusable HTTP client infrastructure for HeapCare services and API consumers.
 
