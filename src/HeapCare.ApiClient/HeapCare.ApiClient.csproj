@@ -7,7 +7,7 @@
     <Company>HeapCare</Company>
     <Description>Reusable HTTP client infrastructure for HeapCare services.</Description>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <RepositoryUrl>https://github.com/CompileCare/CompileCare.ApiClient</RepositoryUrl>
+    <RepositoryUrl>https://github.com/HeapCare/HeapCare.ApiClient</RepositoryUrl>
     <PackageTags>heapcare;api-client;http;tenant;correlation;resilience</PackageTags>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <IsPackable>true</IsPackable>
