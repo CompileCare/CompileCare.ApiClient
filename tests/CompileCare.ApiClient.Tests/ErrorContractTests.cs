@@ -1,9 +1,9 @@
 using System.Net;
 using System.Text;
-using CompileCare.ApiClient.Errors;
+using HeapCare.ApiClient.Errors;
 using Xunit;
 
-namespace CompileCare.ApiClient.Tests;
+namespace HeapCare.ApiClient.Tests;
 
 public sealed class ErrorContractTests
 {
@@ -15,7 +15,7 @@ public sealed class ErrorContractTests
             Content = new StringContent(
                 """
                 {
-                  "type": "https://compilecare.in/problems/facility-conflict",
+                  "type": "https://heapcare.in/problems/facility-conflict",
                   "title": "Facility conflict",
                   "status": 409,
                   "detail": "The resource conflicts with an existing facility.",
@@ -28,7 +28,7 @@ public sealed class ErrorContractTests
         };
         response.Headers.Add("X-Correlation-ID", "corr-123");
 
-        var exception = await Assert.ThrowsAsync<CompileCareApiException>(
+        var exception = await Assert.ThrowsAsync<HeapCareApiException>(
             () => response.EnsureSuccessOrThrowAsync());
 
         Assert.Equal(HttpStatusCode.Conflict, exception.StatusCode);
@@ -47,7 +47,7 @@ public sealed class ErrorContractTests
             Content = new StringContent("upstream failure", Encoding.UTF8, "text/plain")
         };
 
-        var exception = await Assert.ThrowsAsync<CompileCareApiException>(
+        var exception = await Assert.ThrowsAsync<HeapCareApiException>(
             () => response.EnsureSuccessOrThrowAsync());
 
         Assert.Equal(HttpStatusCode.BadGateway, exception.StatusCode);
