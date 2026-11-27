@@ -1,6 +1,6 @@
-namespace CompileCare.ApiClient;
+namespace HeapCare.ApiClient;
 
-public sealed class CompileCareApiClientOptions
+public sealed class HeapCareApiClientOptions
 {
     public Uri? BaseAddress { get; set; }
 

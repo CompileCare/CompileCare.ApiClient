@@ -1,9 +1,9 @@
 using System.Net;
-using CompileCare.ApiClient.DependencyInjection;
+using HeapCare.ApiClient.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
-namespace CompileCare.ApiClient.Tests;
+namespace HeapCare.ApiClient.Tests;
 
 public sealed class ResilienceTests
 {
@@ -12,8 +12,8 @@ public sealed class ResilienceTests
     {
         var handler = new SequenceHandler(HttpStatusCode.ServiceUnavailable, HttpStatusCode.OK);
         var services = new ServiceCollection();
-        services.AddCompileCareApiClient("Resilient", options =>
-            options.BaseAddress = new Uri("https://api.compilecare.test/"))
+        services.AddHeapCareApiClient("Resilient", options =>
+            options.BaseAddress = new Uri("https://api.heapcare.test/"))
             .ConfigurePrimaryHttpMessageHandler(() => handler);
 
         using var provider = services.BuildServiceProvider();
@@ -29,8 +29,8 @@ public sealed class ResilienceTests
     {
         var handler = new SequenceHandler(HttpStatusCode.ServiceUnavailable, HttpStatusCode.OK);
         var services = new ServiceCollection();
-        services.AddCompileCareApiClient("Resilient", options =>
-            options.BaseAddress = new Uri("https://api.compilecare.test/"))
+        services.AddHeapCareApiClient("Resilient", options =>
+            options.BaseAddress = new Uri("https://api.heapcare.test/"))
             .ConfigurePrimaryHttpMessageHandler(() => handler);
 
         using var provider = services.BuildServiceProvider();

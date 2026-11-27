@@ -1,4 +1,0 @@
-<Solution>
-  <Project Path="src/CompileCare.ApiClient/CompileCare.ApiClient.csproj" />
-  <Project Path="tests/CompileCare.ApiClient.Tests/CompileCare.ApiClient.Tests.csproj" />
-</Solution>

@@ -1,14 +1,14 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
-    <PackageId>CompileCare.ApiClient</PackageId>
+    <PackageId>HeapCare.ApiClient</PackageId>
     <Version>0.2.0</Version>
-    <Authors>CompileCare</Authors>
-    <Company>CompileCare</Company>
-    <Description>Reusable HTTP client infrastructure for CompileCare services.</Description>
+    <Authors>HeapCare</Authors>
+    <Company>HeapCare</Company>
+    <Description>Reusable HTTP client infrastructure for HeapCare services.</Description>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <RepositoryUrl>https://github.com/CompileCare/CompileCare.ApiClient</RepositoryUrl>
-    <PackageTags>compilecare;api-client;http;tenant;correlation;resilience</PackageTags>
+    <PackageTags>heapcare;api-client;http;tenant;correlation;resilience</PackageTags>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <IsPackable>true</IsPackable>
   </PropertyGroup>

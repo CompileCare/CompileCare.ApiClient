@@ -1,8 +1,8 @@
-using CompileCare.ApiClient.Abstractions;
-using CompileCare.ApiClient.Handlers;
+using HeapCare.ApiClient.Abstractions;
+using HeapCare.ApiClient.Handlers;
 using Xunit;
 
-namespace CompileCare.ApiClient.Tests;
+namespace HeapCare.ApiClient.Tests;
 
 public class HeaderHandlersTests
 {

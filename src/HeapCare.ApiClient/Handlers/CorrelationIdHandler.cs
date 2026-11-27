@@ -1,6 +1,6 @@
-using CompileCare.ApiClient.Abstractions;
+using HeapCare.ApiClient.Abstractions;
 
-namespace CompileCare.ApiClient.Handlers;
+namespace HeapCare.ApiClient.Handlers;
 
 public sealed class CorrelationIdHandler(ICorrelationIdProvider correlationIdProvider) : DelegatingHandler
 {

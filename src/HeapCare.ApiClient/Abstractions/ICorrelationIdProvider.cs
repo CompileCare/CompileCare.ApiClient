@@ -1,4 +1,4 @@
-namespace CompileCare.ApiClient.Abstractions;
+namespace HeapCare.ApiClient.Abstractions;
 
 public interface ICorrelationIdProvider
 {
