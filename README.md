@@ -1,6 +1,6 @@
 # HeapCare API Client
 
-> **Brand migration in progress:** HeapCare is the product brand. Repository names, .NET namespaces, package IDs, database identifiers, OIDC realm/client IDs, and deployment identifiers remain unchanged until their coordinated migration is implemented and validated. Do not infer that technical identifiers have already changed.
+> **Brand migration status:** HeapCare namespaces, project paths and the NuGet package ID are migrated in this branch. The GitHub repository remains `CompileCare/CompileCare.ApiClient` until the organization/repository rename is completed. No domain, DNS, email or deployment origin is assumed.
 
 Reusable HTTP client infrastructure for HeapCare services and API consumers.
 
