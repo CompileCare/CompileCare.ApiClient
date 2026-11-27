@@ -1,6 +1,8 @@
-# CompileCare.ApiClient
+# HeapCare API Client
 
-Reusable HTTP client infrastructure for CompileCare services and API consumers.
+> **Brand migration in progress:** HeapCare is the product brand. Repository names, .NET namespaces, package IDs, database identifiers, OIDC realm/client IDs, and deployment identifiers remain unchanged until their coordinated migration is implemented and validated. Do not infer that technical identifiers have already changed.
+
+Reusable HTTP client infrastructure for HeapCare services and API consumers.
 
 ## Features
 
