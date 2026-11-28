@@ -15,8 +15,9 @@ public sealed class ErrorContractTests
             Content = new StringContent(
                 """
                 {
-                  "type": "https://heapcare.in/problems/facility-conflict",
-                  "title": "Facility conflict",
+                  "type": "about:blank",
+                  "title": "Conflict",
+                  "code": "facility_conflict",
                   "status": 409,
                   "detail": "The resource conflicts with an existing facility.",
                   "instance": "/api/v1/hospitals",
@@ -32,7 +33,9 @@ public sealed class ErrorContractTests
             () => response.EnsureSuccessOrThrowAsync());
 
         Assert.Equal(HttpStatusCode.Conflict, exception.StatusCode);
-        Assert.Equal("Facility conflict", exception.ProblemDetails.Title);
+        Assert.Equal("about:blank", exception.ProblemDetails.Type);
+        Assert.Equal("facility_conflict", exception.ProblemDetails.Code);
+        Assert.Equal("Conflict", exception.ProblemDetails.Title);
         Assert.Equal("The resource conflicts with an existing facility.", exception.ProblemDetails.Detail);
         Assert.Equal("trace-123", exception.ProblemDetails.TraceId);
         Assert.Equal("corr-123", exception.CorrelationId);
