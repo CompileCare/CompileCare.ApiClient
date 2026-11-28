@@ -10,6 +10,9 @@ public sealed class HeapCareApiProblemDetails
     [JsonPropertyName("type")]
     public string? Type { get; init; }
 
+    [JsonPropertyName("code")]
+    public string? Code { get; init; }
+
     [JsonPropertyName("title")]
     public string? Title { get; init; }
 
